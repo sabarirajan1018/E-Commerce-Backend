@@ -1,0 +1,36 @@
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_ENV: test
+
+install_dependencies:
+  stage: install
+  image: node:18
+  script:
+    - npm install
+  cache:
+    paths:
+      - node_modules/
+
+run_tests:
+  stage: test
+  image: node:18
+  script:
+    - npm test
+
+build_backend:
+  stage: build
+  image: node:18
+  script:
+    - npm run build
+
+deploy_backend:
+  stage: deploy
+  script:
+    - ssh user@yourserver "cd /app && git pull && npm install && pm2 restart all"
+  only:
+    - main
